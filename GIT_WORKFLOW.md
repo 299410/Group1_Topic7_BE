@@ -7,7 +7,9 @@
 - [Quy Tắc Đặt Tên](#-quy-tắc-đặt-tên)
 - [Các Lệnh Git Thường Dùng](#-các-lệnh-git-thường-dùng)
 - [Quy Trình Merge Code](#-quy-trình-merge-code)
+- [Quy Tắc Push Code & Tạo Merge Request](#-quy-tắc-push-code--tạo-merge-request)
 - [Xử Lý Conflict](#-xử-lý-conflict)
+- [Những Điều Không Nên Làm](#-những-điều-không-nên-làm)
 
 ---
 
@@ -257,6 +259,140 @@ git reset --hard HEAD~1
 
 ---
 
+## 📤 Quy Tắc Push Code & Tạo Merge Request
+
+### Trước Khi Push Code
+
+#### ✅ Checklist Bắt Buộc
+
+```
+□ Code đã chạy được trên local (build thành công)
+□ Đã test các chức năng liên quan
+□ Không có lỗi lint/warning nghiêm trọng
+□ Đã pull code mới nhất từ develop
+□ Đã resolve tất cả conflict (nếu có)
+□ Commit message đúng convention
+□ Không commit file không cần thiết (.env, .idea, node_modules, target/...)
+```
+
+#### Các Bước Push Code
+
+```bash
+# 1. Kiểm tra status
+git status
+
+# 2. Xem lại các thay đổi
+git diff
+
+# 3. Stage files cần thiết (KHÔNG dùng git add . nếu có file không cần thiết)
+git add src/main/java/com/swp/ckms/...
+# hoặc
+git add .
+
+# 4. Commit với message rõ ràng
+git commit -m "feat: thêm API tạo đơn hàng mới"
+
+# 5. Pull develop mới nhất trước khi push
+git pull origin develop
+
+# 6. Push lên remote
+git push origin feature/ten-tinh-nang
+```
+
+### Tạo Merge Request (MR) / Pull Request (PR)
+
+#### Quy Tắc Đặt Tên MR/PR
+
+```
+[TYPE] Mô tả ngắn gọn
+
+Ví dụ:
+[FEAT] Thêm chức năng đăng nhập bằng Google
+[FIX] Sửa lỗi không load được danh sách sản phẩm
+[REFACTOR] Tối ưu query lấy thông tin user
+[HOTFIX] Sửa lỗi bảo mật trong xác thực token
+```
+
+#### Template Mô Tả MR/PR
+
+```markdown
+## 📝 Mô Tả
+
+- Mô tả ngắn gọn những gì đã làm
+
+## 🔗 Link Task/Issue
+
+- Link đến task trên Jira/Trello/GitHub Issues
+
+## 📸 Screenshots (nếu có thay đổi UI)
+
+- Đính kèm ảnh/video demo
+
+## ✅ Checklist
+
+- [ ] Code đã test trên local
+- [ ] Không có lỗi build
+- [ ] Đã viết unit test (nếu cần)
+- [ ] Đã cập nhật documentation (nếu cần)
+
+## 🧪 Cách Test
+
+1. Bước 1...
+2. Bước 2...
+
+## ⚠️ Lưu Ý (nếu có)
+
+- Các lưu ý quan trọng cho reviewer
+```
+
+#### Quy Định Khi Tạo MR/PR
+
+| Quy Định          | Chi Tiết                                                |
+| ----------------- | ------------------------------------------------------- |
+| **Target Branch** | `develop` (mặc định), `main` (chỉ hotfix)               |
+| **Assignee**      | Assign cho chính mình                                   |
+| **Reviewer**      | Chọn ít nhất 1 người review (Senior/Lead)               |
+| **Labels**        | Gắn label phù hợp: `feature`, `bug`, `hotfix`, `urgent` |
+| **Milestone**     | Gắn vào Sprint/Milestone hiện tại                       |
+
+#### Quy Trình Sau Khi Tạo MR/PR
+
+```
+1. 📢 Thông báo trên group chat rằng đã tạo MR
+2. ⏳ Chờ reviewer review (tối đa 24h)
+3. 💬 Phản hồi các comment từ reviewer
+4. 🔄 Sửa code theo yêu cầu (nếu có)
+5. ✅ Chờ approve từ reviewer
+6. 🔀 Merge sau khi được approve (bởi Lead hoặc người có quyền)
+7. 🗑️ Xóa nhánh sau khi merge
+```
+
+#### ⚠️ Lưu Ý Quan Trọng
+
+> **KHÔNG** được tự merge MR/PR mà chưa có approve từ reviewer!
+
+> **KHÔNG** được merge khi CI/CD pipeline fail!
+
+> Nếu MR/PR có conflict, **PHẢI** resolve conflict trước khi yêu cầu review!
+
+### Quy Tắc Review Code
+
+#### Người Tạo MR/PR (Author)
+
+- ✅ Đảm bảo code sạch, dễ đọc trước khi request review
+- ✅ Phản hồi comment trong vòng 24h
+- ✅ Không argue về style nếu không ảnh hưởng logic
+- ✅ Cảm ơn reviewer sau khi được approve 🙏
+
+#### Người Review (Reviewer)
+
+- ✅ Review trong vòng 24h sau khi được assign
+- ✅ Comment constructive, không chỉ trích cá nhân
+- ✅ Đánh dấu rõ ràng: `[MUST FIX]`, `[SUGGESTION]`, `[QUESTION]`
+- ✅ Approve ngay khi thấy code OK, không delay
+
+---
+
 ## ⚠️ Xử Lý Conflict
 
 ### Khi Gặp Conflict
@@ -306,11 +442,8 @@ git push origin <ten-nhanh>
 
 Nếu gặp vấn đề với Git, liên hệ:
 
-- **Team Lead**: [Tên Team Lead]
-- **Channel hỗ trợ**: [Link Discord/Slack/Teams]
+- **Team Lead**: Nguyễn Minh Tuấn
 
 ---
 
 > 💡 **Tip**: Bookmark file này để tham khảo nhanh khi cần!
-
-_Cập nhật lần cuối: Tháng 2, 2026_
