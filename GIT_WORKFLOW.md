@@ -1,0 +1,316 @@
+# 🚀 Hướng Dẫn Làm Việc Với Git - Team Workflow
+
+## 📋 Mục Lục
+
+- [Cấu Trúc Nhánh](#-cấu-trúc-nhánh)
+- [Quy Trình Làm Việc](#-quy-trình-làm-việc)
+- [Quy Tắc Đặt Tên](#-quy-tắc-đặt-tên)
+- [Các Lệnh Git Thường Dùng](#-các-lệnh-git-thường-dùng)
+- [Quy Trình Merge Code](#-quy-trình-merge-code)
+- [Xử Lý Conflict](#-xử-lý-conflict)
+
+---
+
+## 🌳 Cấu Trúc Nhánh
+
+```
+main (production)
+  │
+  └── develop (development)
+        │
+        ├── feature/xxx
+        ├── bugfix/xxx
+        └── hotfix/xxx
+```
+
+| Nhánh       | Mô Tả                                        | Ai Được Merge      |
+| ----------- | -------------------------------------------- | ------------------ |
+| `main`      | Nhánh chính, chứa code production ổn định    | Team Lead          |
+| `develop`   | Nhánh phát triển, tích hợp các tính năng mới | Team Lead / Senior |
+| `feature/*` | Nhánh phát triển tính năng mới               | Developer          |
+| `bugfix/*`  | Nhánh sửa lỗi từ develop                     | Developer          |
+| `hotfix/*`  | Nhánh sửa lỗi khẩn cấp từ main               | Developer          |
+
+---
+
+## 🔄 Quy Trình Làm Việc
+
+### 1. Bắt Đầu Tính Năng Mới
+
+```bash
+# 1. Cập nhật develop mới nhất
+git checkout develop
+git pull origin develop
+
+# 2. Tạo nhánh feature mới
+git checkout -b feature/ten-tinh-nang
+
+# 3. Làm việc và commit thường xuyên
+git add .
+git commit -m "feat: mô tả công việc"
+
+# 4. Push lên remote
+git push origin feature/ten-tinh-nang
+```
+
+### 2. Hoàn Thành Tính Năng
+
+```bash
+# 1. Cập nhật develop mới nhất vào nhánh feature
+git checkout feature/ten-tinh-nang
+git pull origin develop
+
+# 2. Giải quyết conflict (nếu có)
+
+# 3. Push code đã merge
+git push origin feature/ten-tinh-nang
+
+# 4. Tạo Pull Request trên GitHub/GitLab
+```
+
+### 3. Sửa Lỗi (Bugfix)
+
+```bash
+# 1. Tạo nhánh bugfix từ develop
+git checkout develop
+git pull origin develop
+git checkout -b bugfix/ten-loi
+
+# 2. Sửa lỗi và commit
+git add .
+git commit -m "fix: mô tả lỗi đã sửa"
+
+# 3. Push và tạo Pull Request
+git push origin bugfix/ten-loi
+```
+
+### 4. Hotfix (Lỗi Khẩn Cấp Trên Production)
+
+```bash
+# 1. Tạo nhánh hotfix từ main
+git checkout main
+git pull origin main
+git checkout -b hotfix/ten-loi-khan-cap
+
+# 2. Sửa lỗi và commit
+git add .
+git commit -m "hotfix: mô tả lỗi khẩn cấp"
+
+# 3. Push và tạo Pull Request vào cả main VÀ develop
+git push origin hotfix/ten-loi-khan-cap
+```
+
+---
+
+## 📝 Quy Tắc Đặt Tên
+
+### Tên Nhánh
+
+```
+<type>/<short-description>
+```
+
+**Ví dụ:**
+
+- `feature/user-authentication`
+- `feature/add-payment-gateway`
+- `bugfix/fix-login-error`
+- `hotfix/fix-critical-security-issue`
+
+### Commit Message (Conventional Commits)
+
+```
+<type>: <description>
+
+[optional body]
+```
+
+**Types:**
+| Type | Mô Tả |
+|------|-------|
+| `feat` | Tính năng mới |
+| `fix` | Sửa lỗi |
+| `docs` | Thay đổi documentation |
+| `style` | Format code (không ảnh hưởng logic) |
+| `refactor` | Refactor code |
+| `test` | Thêm/sửa test |
+| `chore` | Công việc khác (cập nhật dependencies, config...) |
+
+**Ví dụ:**
+
+```bash
+git commit -m "feat: thêm chức năng đăng nhập bằng Google"
+git commit -m "fix: sửa lỗi không hiển thị avatar user"
+git commit -m "docs: cập nhật README với hướng dẫn cài đặt"
+git commit -m "refactor: tối ưu query lấy danh sách sản phẩm"
+```
+
+---
+
+## 💻 Các Lệnh Git Thường Dùng
+
+### Cơ Bản
+
+```bash
+# Clone repository
+git clone <url>
+
+# Xem trạng thái
+git status
+
+# Xem lịch sử commit
+git log --oneline -10
+
+# Xem các nhánh
+git branch -a
+```
+
+### Làm Việc Với Nhánh
+
+```bash
+# Tạo và chuyển sang nhánh mới
+git checkout -b <ten-nhanh>
+
+# Chuyển sang nhánh khác
+git checkout <ten-nhanh>
+
+# Xóa nhánh local
+git branch -d <ten-nhanh>
+
+# Xóa nhánh remote
+git push origin --delete <ten-nhanh>
+```
+
+### Commit & Push
+
+```bash
+# Thêm tất cả file thay đổi
+git add .
+
+# Thêm file cụ thể
+git add <file-path>
+
+# Commit với message
+git commit -m "message"
+
+# Push lên remote
+git push origin <ten-nhanh>
+
+# Force push (cẩn thận!)
+git push origin <ten-nhanh> --force
+```
+
+### Cập Nhật Code
+
+```bash
+# Fetch tất cả thay đổi từ remote
+git fetch --all
+
+# Pull code mới nhất
+git pull origin <ten-nhanh>
+
+# Merge nhánh khác vào nhánh hiện tại
+git merge <ten-nhanh>
+```
+
+### Hoàn Tác
+
+```bash
+# Hoàn tác thay đổi chưa stage
+git checkout -- <file>
+
+# Hoàn tác tất cả thay đổi chưa stage
+git checkout -- .
+
+# Unstage file
+git reset HEAD <file>
+
+# Hoàn tác commit gần nhất (giữ lại thay đổi)
+git reset --soft HEAD~1
+
+# Hoàn tác commit gần nhất (xóa thay đổi)
+git reset --hard HEAD~1
+```
+
+---
+
+## 🔀 Quy Trình Merge Code
+
+### Sử Dụng Pull Request (Khuyến Nghị)
+
+1. **Tạo Pull Request** trên GitHub/GitLab
+2. **Assign Reviewer** để review code
+3. **Reviewer kiểm tra:**
+   - Code đúng convention
+   - Không có lỗi logic
+   - Test pass
+4. **Approve & Merge** bởi người có quyền
+5. **Xóa nhánh** sau khi merge
+
+### Quy Tắc Review
+
+- ✅ Code clean, dễ đọc
+- ✅ Không có code thừa/comment không cần thiết
+- ✅ Đặt tên biến/hàm có ý nghĩa
+- ✅ Xử lý exception đầy đủ
+- ✅ Test cases cover các trường hợp quan trọng
+
+---
+
+## ⚠️ Xử Lý Conflict
+
+### Khi Gặp Conflict
+
+```bash
+# 1. Pull code mới nhất từ develop
+git pull origin develop
+
+# 2. Git sẽ báo conflict, mở file có conflict
+# Tìm và sửa các đoạn:
+<<<<<<< HEAD
+# Code của bạn
+=======
+# Code từ develop
+>>>>>>> develop
+
+# 3. Sau khi sửa, thêm và commit
+git add .
+git commit -m "resolve: merge conflict with develop"
+
+# 4. Push lại
+git push origin <ten-nhanh>
+```
+
+### Tips Tránh Conflict
+
+- 📌 **Pull develop thường xuyên** vào nhánh feature của bạn
+- 📌 **Commit nhỏ, thường xuyên** thay vì commit lớn
+- 📌 **Communicate với team** khi làm việc trên cùng file
+- 📌 **Chia task rõ ràng** để tránh overlap
+
+---
+
+## 🚫 Những Điều KHÔNG Nên Làm
+
+| ❌ Không Làm                          | ✅ Nên Làm                   |
+| ------------------------------------- | ---------------------------- |
+| Push trực tiếp vào `main`             | Tạo PR và merge              |
+| Force push vào nhánh chung            | Chỉ force push nhánh cá nhân |
+| Commit message không rõ ràng          | Sử dụng conventional commits |
+| Commit quá nhiều file không liên quan | Commit theo từng feature nhỏ |
+| Merge khi chưa được review            | Chờ approve từ reviewer      |
+
+---
+
+## 📞 Liên Hệ Hỗ Trợ
+
+Nếu gặp vấn đề với Git, liên hệ:
+
+- **Team Lead**: [Tên Team Lead]
+- **Channel hỗ trợ**: [Link Discord/Slack/Teams]
+
+---
+
+> 💡 **Tip**: Bookmark file này để tham khảo nhanh khi cần!
+
+_Cập nhật lần cuối: Tháng 2, 2026_
