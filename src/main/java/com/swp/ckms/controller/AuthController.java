@@ -2,6 +2,7 @@ package com.swp.ckms.controller;
 
 import com.swp.ckms.dto.LoginRequest;
 import com.swp.ckms.dto.LoginResponse;
+import com.swp.ckms.dto.LogoutRequest;
 import com.swp.ckms.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,10 +25,12 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(loginRequest));
     }
 
+
+
     @PostMapping("/logout")
-    @Operation(summary = "Logout user", description = "Invalidate JWT token (client-side)")
-    public ResponseEntity<String> logout() {
-        authService.logout();
+    @Operation(summary = "Logout user", description = "Invalidate Refresh Token")
+    public ResponseEntity<String> logout(@Valid @RequestBody LogoutRequest logoutRequest) {
+        authService.logout(logoutRequest);
         return ResponseEntity.ok("Logged out successfully");
     }
 }
