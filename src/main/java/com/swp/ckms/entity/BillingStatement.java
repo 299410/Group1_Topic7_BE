@@ -1,0 +1,43 @@
+package com.swp.ckms.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "billing_statements")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class BillingStatement {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long statementId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id", nullable = false)
+    private FranchiseStore store;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_method_id")
+    private PaymentMethod paymentMethod;
+
+    private LocalDate cycleStart;
+
+    private LocalDate cycleEnd;
+
+    private BigDecimal totalAmount;
+
+    @Column(nullable = false)
+    private String status; // UNPAID, PAID, OVERDUE
+
+    private LocalDateTime paidAt;
+}
