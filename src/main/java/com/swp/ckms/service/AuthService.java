@@ -2,6 +2,7 @@ package com.swp.ckms.service;
 
 import com.swp.ckms.dto.LoginRequest;
 import com.swp.ckms.dto.LoginResponse;
+import com.swp.ckms.dto.LogoutRequest;
 import com.swp.ckms.entity.RefreshToken;
 import com.swp.ckms.entity.User;
 import com.swp.ckms.repository.UserRepository;
@@ -11,14 +12,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -58,8 +58,8 @@ public class AuthService {
                 .expiresIn(jwtExpiration / 1000)
                 .build();
     }
-    public void logout() {
-        // For stateless JWT, logout is primarily handled on the client side by removing the token.
-        // If strict server-side invalidation is required, implement a token blacklist (Redis/DB).
+
+    public void logout(LogoutRequest logoutRequest) {
+        refreshTokenService.deleteByToken(logoutRequest.getRefreshToken());
     }
 }

@@ -59,4 +59,9 @@ public class RefreshTokenService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
         return refreshTokenRepository.deleteByUser(user);
     }
+
+    @Transactional
+    public void deleteByToken(String token) {
+        refreshTokenRepository.deleteByToken(token);
+    }
 }
