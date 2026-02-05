@@ -2,10 +2,12 @@ package com.swp.ckms.service;
 
 import com.swp.ckms.dto.LoginRequest;
 import com.swp.ckms.dto.LoginResponse;
+import com.swp.ckms.entity.RefreshToken;
 import com.swp.ckms.entity.User;
 import com.swp.ckms.repository.UserRepository;
 import com.swp.ckms.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,6 +27,10 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
     private final UserRepository userRepository;
+    private final RefreshTokenService refreshTokenService;
+
+    @Value("${jwt.expiration}")
+    private long jwtExpiration;
 
     public LoginResponse login(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
@@ -35,22 +41,21 @@ public class AuthService {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = tokenProvider.generateToken(authentication);
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        List<String> privileges = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-
+        
         User user = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        
+        String jwt = tokenProvider.generateToken(authentication, user.getUserId());
+        
+        // Create Refresh Token
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getUserId());
 
         return LoginResponse.builder()
-                .token(jwt)
-                .username(userDetails.getUsername())
-                .id(user.getUserId())
-                .role(user.getRole().getRoleName())
-                .privileges(privileges)
+                .accessToken(jwt)
+                .refreshToken(refreshToken.getToken())
+                .expiresIn(jwtExpiration / 1000)
                 .build();
     }
     public void logout() {
