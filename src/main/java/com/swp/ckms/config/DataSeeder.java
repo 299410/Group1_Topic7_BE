@@ -2,6 +2,7 @@ package com.swp.ckms.config;
 
 import com.swp.ckms.entity.Role;
 import com.swp.ckms.entity.User;
+import com.swp.ckms.enums.UserStatus;
 import com.swp.ckms.repository.RoleRepository;
 import com.swp.ckms.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,10 +36,11 @@ public class DataSeeder implements CommandLineRunner {
         if (!userRepository.existsByUsername("admin")) {
             userRepository.save(User.builder()
                     .username("admin")
+                    .email("admin@ckms.com")
                     .password(passwordEncoder.encode("admin"))
                     .fullName("System Administrator")
                     .role(adminRole)
-                    .isActive(true)
+                    .status(UserStatus.ACTIVE)
                     .build());
             System.out.println(">>> Seeded default admin user: admin / admin");
         }
