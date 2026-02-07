@@ -1,8 +1,8 @@
 package com.swp.ckms.controller;
 
-import com.swp.ckms.dto.LoginRequest;
-import com.swp.ckms.dto.LoginResponse;
-import com.swp.ckms.dto.LogoutRequest;
+import com.swp.ckms.dto.request.LoginRequest;
+import com.swp.ckms.dto.response.LoginResponse;
+import com.swp.ckms.dto.request.LogoutRequest;
 import com.swp.ckms.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

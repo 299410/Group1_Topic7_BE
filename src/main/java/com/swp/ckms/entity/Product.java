@@ -33,5 +33,5 @@ public class Product {
 
     @Builder.Default
     @Column(nullable = false)
-    private Boolean isActive = true;
+    private Boolean active = true;
 }

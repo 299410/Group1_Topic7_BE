@@ -1,6 +1,7 @@
 package com.swp.ckms.entity;
 
 import jakarta.persistence.*;
+import com.swp.ckms.enums.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,10 +22,21 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = true)
     private String password;
 
     private String fullName;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserStatus status;
+
+    private String verificationTokenHash;
+
+    private java.time.LocalDateTime verificationTokenExpiresAt;
 
     @Builder.Default
     @Column(nullable = false)
