@@ -23,7 +23,7 @@ public class EmailService {
     @Value("${spring.mail.username:noreply@example.com}")
     private String fromEmail;
 
-    public void sendVerificationEmail(String to, String fullName, String verificationLink) {
+    public void sendVerificationEmail(String to, String fullName, String username, String verificationLink) {
         try {
             log.info("Sending verification email to {}", to);
             
@@ -33,7 +33,7 @@ public class EmailService {
             helper.setFrom(fromEmail);
             helper.setTo(to);
             helper.setSubject(emailUtils.getVerificationEmailSubject());
-            helper.setText(emailUtils.getVerificationEmailBody(fullName, verificationLink), true);
+            helper.setText(emailUtils.getVerificationEmailBody(fullName, username, verificationLink), true);
 
             mailSender.send(message);
             log.info("Verification email sent successfully to {}", to);

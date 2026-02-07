@@ -9,7 +9,7 @@ public class EmailUtils {
         return "Account Verification - CKMS";
     }
 
-    public String getVerificationEmailBody(String fullName, String verificationLink) {
+    public String getVerificationEmailBody(String fullName, String username, String verificationLink) {
     return "<!DOCTYPE html>\n" +
             "<html>\n" +
             "<head>\n" +
@@ -40,6 +40,7 @@ public class EmailUtils {
             "            <div class=\"email-body\">\n" +
             "                <div class=\"greeting\">Xin chào " + fullName + "! 👋</div>\n" +
             "                <p class=\"text-content\">Chào mừng bạn đến với <strong>Central Kitchen Management System</strong>.</p>\n" +
+            "                <p class=\"text-content\">Username của bạn là: <strong>" + username + "</strong></p>\n" +
             "                <p class=\"text-content\">Để bắt đầu sử dụng hệ thống, bạn vui lòng xác thực địa chỉ email bằng nút bên dưới nhé.</p>\n" +
             "                \n" +
             "                <div style=\"margin: 30px 0;\">\n" +
