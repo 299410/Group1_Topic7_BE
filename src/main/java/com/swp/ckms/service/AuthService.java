@@ -1,8 +1,8 @@
 package com.swp.ckms.service;
 
-import com.swp.ckms.dto.LoginRequest;
-import com.swp.ckms.dto.LoginResponse;
-import com.swp.ckms.dto.LogoutRequest;
+import com.swp.ckms.dto.request.LoginRequest;
+import com.swp.ckms.dto.response.LoginResponse;
+import com.swp.ckms.dto.request.LogoutRequest;
 import com.swp.ckms.entity.RefreshToken;
 import com.swp.ckms.entity.User;
 import com.swp.ckms.repository.UserRepository;
@@ -47,7 +47,7 @@ public class AuthService {
         User user = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         
-        String jwt = tokenProvider.generateToken(authentication, user.getUserId());
+        String jwt = tokenProvider.generateToken(user.getUsername(), user.getUserId(), user.getRole().getRoleName());
         
         // Create Refresh Token
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getUserId());
@@ -55,7 +55,7 @@ public class AuthService {
         return LoginResponse.builder()
                 .accessToken(jwt)
                 .refreshToken(refreshToken.getToken())
-                .expiresIn(jwtExpiration / 1000)
+                .accessTokenExpiresIn(jwtExpiration / 1000)
                 .build();
     }
 
