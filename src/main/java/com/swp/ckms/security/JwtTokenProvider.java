@@ -24,13 +24,15 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(Authentication authentication) {
+    public String generateToken(Authentication authentication, Long userId) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpiration);
 
         return Jwts.builder()
                 .subject(userDetails.getUsername())
+                .claim("authorities", userDetails.getAuthorities())
+                .claim("userId", userId)
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(getSigningKey())
